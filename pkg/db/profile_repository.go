@@ -4,7 +4,7 @@ type Repository struct {
 	client map[int]UserProfile // hold all the users profiles, act as the DB. user is access via id
 }
 
-var UsersProfiles map[int]UserProfile // In this file just for now, later in the exercises will be different
+var UsersProfiles = make(map[int]UserProfile, 0) // In this file just for now, later in the exercises will be different
 
 func NewDbClient() map[int]UserProfile {
 	return UsersProfiles

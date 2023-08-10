@@ -51,7 +51,7 @@ func (h *Handler) createUserProfile(c *gin.Context) {
 	if err := c.BindJSON(&newProfile); err != nil { // bind the received JSON to newProfile.
 		return
 	}
-	h.service.CreateNewUser(newProfile)
+	h.service.CreateNewProfile(newProfile)
 	c.IndentedJSON(http.StatusCreated, newProfile)
 }
 

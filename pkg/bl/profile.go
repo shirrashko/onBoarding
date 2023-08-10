@@ -30,7 +30,7 @@ func (s *Service) UpdateUserProfile(userID int, newProfile db.UserProfile) {
 	s.repository.UpdateProfile(userID, newProfile)
 }
 
-func (s *Service) CreateNewUser(newProfile db.UserProfile) {
+func (s *Service) CreateNewProfile(newProfile db.UserProfile) {
 	// Add the new profile to the slice.
 	s.repository.NewProfile(nextAvailableID, newProfile)
 	promoteNextAvailableID()

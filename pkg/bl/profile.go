@@ -39,3 +39,9 @@ func (s *Service) CreateNewProfile(newProfile db.UserProfile) {
 func (s *Service) GetProfileByID(id int) db.UserProfile {
 	return s.repository.GetProfileByID(id)
 }
+
+func HealthChecking() bool {
+	// In the real world the health-check function will also check connections to other resources that the server
+	//depends on.
+	return true
+}

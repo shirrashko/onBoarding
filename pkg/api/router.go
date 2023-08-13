@@ -7,7 +7,7 @@ import (
 )
 
 type Handlers struct {
-	handlers []profile.Handler
+	Handlers []profile.Handler
 }
 
 func Router() Handlers {
@@ -16,5 +16,5 @@ func Router() Handlers {
 	profileRepo := db.NewProfileRepository(dbClient)
 	profileService := bl.NewService(&profileRepo)
 	profileHandler := profile.NewHandler(&profileService)
-	return Handlers{handlers: []profile.Handler{profileHandler}}
+	return Handlers{Handlers: []profile.Handler{profileHandler}}
 }

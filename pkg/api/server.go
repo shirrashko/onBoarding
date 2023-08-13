@@ -17,7 +17,7 @@ func NewServer(routerFactory func() Handlers) Server {
 }
 
 func (server *Server) SetUp(handlers Handlers) {
-	for _, h := range handlers.handlers {
+	for _, h := range handlers.Handlers {
 		h.SetUpRoutes(server.engine)
 	}
 }

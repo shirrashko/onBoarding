@@ -14,7 +14,7 @@ package tests
 //func TestCreateUserProfile(t *testing.T) {
 //	// Set up a mock Gin router
 //	router := gin.Default()
-//	h := api.Router().Handlers[0:1]
+//	h := api.Router().handlers[0:1]
 //	router.POST("/users", h.createUserProfile)
 //
 //	// Create a request to the endpoint

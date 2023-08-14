@@ -22,9 +22,6 @@ func (server *Server) SetUp(handlers Handlers) {
 	}
 }
 
-func (server *Server) ListenAndServe() { // Attach the engine to a http.Server and start the Server.
-	err := server.engine.Run("localhost:8080")
-	if err != nil {
-		return
-	}
+func (server *Server) ListenAndServe() error { // Attach the engine to a http.Server and start the Server.
+	return server.engine.Run("localhost:8080")
 }

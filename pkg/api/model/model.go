@@ -1,4 +1,4 @@
-package db
+package model
 
 type UserProfile struct {
 	Username      string `json:"username"` // unique per user

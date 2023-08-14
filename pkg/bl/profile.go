@@ -1,6 +1,7 @@
 package bl
 
 import (
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/db"
 )
 
@@ -26,17 +27,17 @@ func (s *Service) IsUserInDB(id int) bool {
 	return false
 }
 
-func (s *Service) UpdateUserProfile(userID int, newProfile db.UserProfile) {
+func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) {
 	s.repository.UpdateProfile(userID, newProfile)
 }
 
-func (s *Service) CreateNewUser(newProfile db.UserProfile) {
+func (s *Service) CreateNewProfile(newProfile model.UserProfile) {
 	// Add the new profile to the slice.
 	s.repository.NewProfile(nextAvailableID, newProfile)
 	promoteNextAvailableID()
 }
 
-func (s *Service) GetProfileByID(id int) db.UserProfile {
+func (s *Service) GetProfileByID(id int) model.UserProfile {
 	return s.repository.GetProfileByID(id)
 }
 

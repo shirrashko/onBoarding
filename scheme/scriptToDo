@@ -1,0 +1,10 @@
+todo: check how to create a sql script
+
+
+CREATE TABLE IF NOT EXISTS userProfiles (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    full_name VARCHAR(100),
+    bio TEXT,
+    profile_pic_url VARCHAR(200)
+);

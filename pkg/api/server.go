@@ -15,7 +15,7 @@ func NewServer(routerFactory func() (Handlers, error)) (Server, error) {
 	if err != nil {
 		return server, err
 	}
-	server.SetUp(handlers) //todo: keep track and make sure I managed everything as I should have
+	server.SetUp(handlers)
 	return server, nil
 }
 

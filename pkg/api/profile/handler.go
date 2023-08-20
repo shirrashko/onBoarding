@@ -21,9 +21,13 @@ func NewHandler(s *bl.Service) Handler {
 func (h *Handler) getUserProfileByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id")) // retrieve the id path parameter from the URL
 	if h.service.IsUserInDB(id) {
-		c.IndentedJSON(http.StatusOK, h.service.GetProfileByID(id))
+		profile, err := h.service.GetProfileByID(id)
+		if err != nil {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "ID not found"})
+		}
+		c.IndentedJSON(http.StatusOK, profile)
 	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "ID not found"})
+
 	}
 }
 
@@ -37,13 +41,13 @@ func (h *Handler) updateUserProfile(c *gin.Context) {
 	}
 
 	userID, _ := strconv.Atoi(c.Param("id"))
-	if !h.service.IsUserInDB(userID) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+	err := h.service.UpdateUserProfile(userID, newUser)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or error updating profile"})
 		return
-	} else { // adds a user from JSON received in the request body
-		h.service.UpdateUserProfile(userID, newUser)
-		c.JSON(http.StatusOK, newUser)
 	}
+
+	c.JSON(http.StatusOK, newUser)
 }
 
 func (h *Handler) createUserProfile(c *gin.Context) {
@@ -51,6 +55,6 @@ func (h *Handler) createUserProfile(c *gin.Context) {
 	if err := c.BindJSON(&newProfile); err != nil { // bind the received JSON to newProfile.
 		return
 	}
-	h.service.CreateNewProfile(newProfile)
+	_ = h.service.CreateNewProfile(newProfile) //todo: handle error
 	c.IndentedJSON(http.StatusCreated, newProfile)
 }

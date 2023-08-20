@@ -3,6 +3,10 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"os"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
+
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
 )
 
@@ -11,21 +15,37 @@ type ProfileRepository struct {
 	client *sql.DB
 }
 
-func NewProfileRepository(client *sql.DB) ProfileRepository {
-	return ProfileRepository{client: client}
+func NewProfileRepository(client *sql.DB) *ProfileRepository {
+	return &ProfileRepository{client: client}
 }
 
 func NewDbClient() (*sql.DB, error) {
-	// Create a new *sql.DB instance
-	connStr := "user=srashkovits dbname=postgres host=localhost port=6432 sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
+	host := "localhost"
+	port := "6432"
+	user := "srashkovits"
+	password := "password"
+	dbname := "dbname"
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	db, err := sql.Open("pgx", psqlInfo)
 	if err != nil {
 		fmt.Printf("Error opening database connection: %v\n", err)
 		return nil, err
 	}
-	defer func(db *sql.DB) {
-		db.Close()
-	}(db) // Close the database connection when the program exits
+
+	// Execute the table creation script
+	script, err := os.ReadFile("/Users/srashkovits/repos/onboarding/scheme/create_table.sql")
+	if err != nil {
+		fmt.Printf("Error reading create_tables.sql: %v\n", err)
+		return nil, err
+	}
+
+	_, err = db.Exec(string(script))
+	if err != nil {
+		fmt.Printf("Error executing create_tables.sql: %v\n", err)
+		return nil, err
+	}
+
 	return db, nil
 }
 
@@ -45,7 +65,7 @@ func (repo *ProfileRepository) IsUserInDB(id int) bool {
 
 func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserProfile) error {
 	query := "UPDATE userProfiles SET username = $1, full_name = $2, bio = $3, profile_pic_url = $4 WHERE id = $5"
-	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, userID)
+	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
 	if err != nil {
 		fmt.Printf("Error updating profile: %v\n", err)
 		return err
@@ -53,10 +73,29 @@ func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserPr
 	return nil
 }
 
-func (repo *ProfileRepository) NewProfile(userID int, newProfile model.UserProfile) {
-	repo.client[userID] = newProfile
+func (repo *ProfileRepository) NewProfile(userID int, newProfile model.UserProfile) error {
+	// repo.client[userID] = newProfile
+	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url, id) VALUES ($1, $2, $3, $4, $5)"
+	_, err := repo.client.Exec(query, newProfile.Username, newProfile.Username, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
+	if err != nil {
+		fmt.Printf("Error updating profile: %v\n", err)
+		return err
+	}
+	return nil
 }
 
-func (repo *ProfileRepository) GetProfileByID(id int) model.UserProfile {
-	return repo.client[id]
+func (repo *ProfileRepository) GetProfileByID(id int) (model.UserProfile, error) {
+	query := "SELECT username, full_name, bio, profile_pic_url FROM userProfiles WHERE id = $1"
+	var userProfile model.UserProfile
+	err := repo.client.QueryRow(query, id).Scan(&userProfile.Username, &userProfile.FullName, &userProfile.Bio, &userProfile.ProfilePicURL)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// Handle the case where no rows were found.
+			return userProfile, fmt.Errorf("no user found with ID %d", id)
+		}
+		fmt.Printf("Error querying user profile: %v\n", err)
+		return userProfile, err
+	}
+	return userProfile, nil
 }

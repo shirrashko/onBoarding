@@ -16,9 +16,9 @@ func NewService(profileRepo *db.ProfileRepository) Service {
 
 var nextAvailableID = 1
 
-func promoteNextAvailableID() {
-	nextAvailableID++
-}
+//func promoteNextAvailableID() {
+//	nextAvailableID++
+//}
 
 func (s *Service) IsUserInDB(id int) bool {
 	if s.repository.IsUserInDB(id) {
@@ -27,17 +27,18 @@ func (s *Service) IsUserInDB(id int) bool {
 	return false
 }
 
-func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) {
-	s.repository.UpdateProfile(userID, newProfile)
+func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) error {
+	return s.repository.UpdateProfile(userID, newProfile)
 }
 
-func (s *Service) CreateNewProfile(newProfile model.UserProfile) {
+func (s *Service) CreateNewProfile(newProfile model.UserProfile) error {
 	// Add the new profile to the slice.
-	s.repository.NewProfile(nextAvailableID, newProfile)
-	promoteNextAvailableID()
+	err := s.repository.NewProfile(nextAvailableID, newProfile)
+	// promoteNextAvailableID() //todo: check if needed i think it's now redundant and will cause problems
+	return err
 }
 
-func (s *Service) GetProfileByID(id int) model.UserProfile {
+func (s *Service) GetProfileByID(id int) (model.UserProfile, error) {
 	return s.repository.GetProfileByID(id)
 }
 

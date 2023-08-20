@@ -8,12 +8,15 @@ type Server struct {
 	engine *gin.Engine
 }
 
-func NewServer(routerFactory func() Handlers) Server {
+func NewServer(routerFactory func() (Handlers, error)) (Server, error) {
 	engine := gin.Default()
 	server := Server{engine: engine}
-	handlers := routerFactory()
+	handlers, err := routerFactory()
+	if err != nil {
+		return server, err
+	}
 	server.SetUp(handlers) //todo: keep track and make sure I managed everything as I should have
-	return server
+	return server, nil
 }
 
 func (server *Server) SetUp(handlers Handlers) {
@@ -22,9 +25,6 @@ func (server *Server) SetUp(handlers Handlers) {
 	}
 }
 
-func (server *Server) ListenAndServe() { // Attach the engine to a http.Server and start the Server.
-	err := server.engine.Run("localhost:8080")
-	if err != nil {
-		return
-	}
+func (server *Server) ListenAndServe() error { // Attach the engine to a http.Server and start the Server.
+	return server.engine.Run("localhost:8080")
 }

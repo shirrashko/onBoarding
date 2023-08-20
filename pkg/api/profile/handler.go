@@ -2,8 +2,8 @@ package profile
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/db"
 	"net/http"
 	"strconv"
 )
@@ -18,7 +18,7 @@ func NewHandler(s *bl.Service) Handler {
 
 // implementation of the methods of the Service object, which regard to the db contains users profile info
 
-func (h *Handler) getAUserProfile(c *gin.Context) {
+func (h *Handler) getUserProfileByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id")) // retrieve the id path parameter from the URL
 	if h.service.IsUserInDB(id) {
 		c.IndentedJSON(http.StatusOK, h.service.GetProfileByID(id))
@@ -29,7 +29,7 @@ func (h *Handler) getAUserProfile(c *gin.Context) {
 
 // update an existing resource with new data.
 func (h *Handler) updateUserProfile(c *gin.Context) {
-	var newUser db.UserProfile
+	var newUser model.UserProfile
 	// check if the given user to add is valid (or in a valid format)
 	if err := c.ShouldBindJSON(&newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -47,13 +47,10 @@ func (h *Handler) updateUserProfile(c *gin.Context) {
 }
 
 func (h *Handler) createUserProfile(c *gin.Context) {
-	var newProfile db.UserProfile
+	var newProfile model.UserProfile
 	if err := c.BindJSON(&newProfile); err != nil { // bind the received JSON to newProfile.
 		return
 	}
-	h.service.CreateNewUser(newProfile)
+	h.service.CreateNewProfile(newProfile)
 	c.IndentedJSON(http.StatusCreated, newProfile)
 }
-
-// parsing the JSON data and mapping it to a Go struct. If the JSON data doesn't match the Go struct or if there
-// are validation errors (e.g., wrong data types), Gin provides error messages that you can handle.

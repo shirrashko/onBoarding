@@ -74,12 +74,11 @@ func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserPr
 	return nil
 }
 
-func (repo *ProfileRepository) CreateNewProfile(userID int, newProfile model.UserProfile) error {
-	// repo.client[userID] = newProfile
-	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url, id) VALUES ($1, $2, $3, $4, $5)"
-	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
+func (repo *ProfileRepository) CreateNewProfile(newProfile model.UserProfile) error {
+	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url) VALUES ($1, $2, $3, $4)"
+	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL)
 	if err != nil {
-		fmt.Printf("Error updating profile: %v\n", err)
+		fmt.Printf("Error creating profile: %v\n", err)
 		return err
 	}
 	return nil

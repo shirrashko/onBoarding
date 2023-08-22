@@ -14,12 +14,6 @@ func NewService(profileRepo *db.ProfileRepository) Service {
 	return Service{repository: profileRepo}
 }
 
-var nextAvailableID = 1
-
-//func promoteNextAvailableID() {
-//	nextAvailableID++
-//}
-
 func (s *Service) IsUserInDB(id int) bool {
 	if s.repository.IsUserInDB(id) {
 		return true
@@ -33,7 +27,7 @@ func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) er
 
 func (s *Service) CreateNewProfile(newProfile model.UserProfile) error {
 	// Add the new profile to the slice.
-	err := s.repository.CreateNewProfile(nextAvailableID, newProfile)
+	err := s.repository.CreateNewProfile(newProfile)
 	// promoteNextAvailableID() //todo: check if needed i think it's now redundant and will cause problems
 	return err
 }

@@ -1,4 +1,4 @@
-package db
+package profile
 
 import (
 	"database/sql"

@@ -1,16 +1,16 @@
-package bl
+package profile
 
 import (
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/db"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/db/profile"
 )
 
 // Service The service has a repository with a client field, which is the connection to the database we are working with
 type Service struct {
-	repository *db.ProfileRepository
+	repository *profile.ProfileRepository
 }
 
-func NewService(profileRepo *db.ProfileRepository) Service {
+func NewService(profileRepo *profile.ProfileRepository) Service {
 	return Service{repository: profileRepo}
 }
 
@@ -35,8 +35,11 @@ func (s *Service) GetProfileByID(id int) (model.UserProfile, error) {
 	return s.repository.GetProfileByID(id)
 }
 
-func HealthChecking() bool {
+func (s *Service) HealthChecking() bool {
 	// In the real world the health-check function will also check connections to other resources that the server
 	//depends on.
 	return true
 }
+
+//todo: i dont think that the different servers (of the health check and the profile) should be allowed to access all
+// these functions

@@ -20,7 +20,8 @@ func NewServer(routerFactory func() (Handlers, error)) (Server, error) {
 }
 
 func (server *Server) SetUp(handlers Handlers) {
-	for _, h := range handlers.handlers {
+	for _, h := range handlers.handlers { // looping over a list of handlers with idx and handler=value. if we had
+		// many handlers, each handler was implementing its own setup routes function according to its API
 		h.SetUpRoutes(server.engine)
 	}
 }

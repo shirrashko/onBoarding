@@ -16,23 +16,33 @@ func NewHandler(s *bl.Service) Handler {
 	return Handler{s}
 }
 
-// implementation of the methods of the Service object, which regard to the db contains users profile info
-
 func (h *Handler) getUserProfileByID(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id")) // retrieve the id path parameter from the URL
-	if h.service.IsUserInDB(id) {
-		profile, err := h.service.GetProfileByID(id)
-		if err != nil {
-			c.IndentedJSON(http.StatusNotFound, gin.H{"message": "ID not found"})
-		}
-		c.IndentedJSON(http.StatusOK, profile)
-	} else {
-
+	// Retrieve the id path parameter from the URL
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
+		return
 	}
+
+	// Check if the user exists in the database
+	if !h.service.IsUserInDB(id) {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		return
+	}
+
+	// Get the user's profile by ID
+	profile, err := h.service.GetProfileByID(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving profile"})
+		return
+	}
+
+	// Respond with the profile
+	c.IndentedJSON(http.StatusOK, profile) // put the requested profile in the response body
 }
 
 // update an existing resource with new data.
-func (h *Handler) updateUserProfile(c *gin.Context) {
+func (h *Handler) updateUserProfileByID(c *gin.Context) {
 	var newUser model.UserProfile
 	// check if the given user to add is valid (or in a valid format)
 	if err := c.ShouldBindJSON(&newUser); err != nil {

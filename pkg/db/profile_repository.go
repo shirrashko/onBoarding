@@ -15,8 +15,8 @@ type ProfileRepository struct {
 	client *sql.DB
 }
 
-func NewProfileRepository(client *sql.DB) *ProfileRepository {
-	return &ProfileRepository{client: client}
+func NewProfileRepository(client *sql.DB) ProfileRepository {
+	return ProfileRepository{client: client}
 }
 
 func NewDbClient() (*sql.DB, error) {
@@ -40,7 +40,8 @@ func NewDbClient() (*sql.DB, error) {
 		return nil, err
 	}
 
-	_, err = db.Exec(string(script))
+	_, err = db.Exec(string(script)) // execute the script create a table named userProfiles with columns names
+	// according to the api.model
 	if err != nil {
 		fmt.Printf("Error executing create_tables.sql: %v\n", err)
 		return nil, err
@@ -73,10 +74,10 @@ func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserPr
 	return nil
 }
 
-func (repo *ProfileRepository) NewProfile(userID int, newProfile model.UserProfile) error {
+func (repo *ProfileRepository) CreateNewProfile(userID int, newProfile model.UserProfile) error {
 	// repo.client[userID] = newProfile
 	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url, id) VALUES ($1, $2, $3, $4, $5)"
-	_, err := repo.client.Exec(query, newProfile.Username, newProfile.Username, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
+	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
 	if err != nil {
 		fmt.Printf("Error updating profile: %v\n", err)
 		return err

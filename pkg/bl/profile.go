@@ -33,7 +33,7 @@ func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) er
 
 func (s *Service) CreateNewProfile(newProfile model.UserProfile) error {
 	// Add the new profile to the slice.
-	err := s.repository.NewProfile(nextAvailableID, newProfile)
+	err := s.repository.CreateNewProfile(nextAvailableID, newProfile)
 	// promoteNextAvailableID() //todo: check if needed i think it's now redundant and will cause problems
 	return err
 }

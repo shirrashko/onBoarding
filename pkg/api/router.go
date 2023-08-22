@@ -11,13 +11,14 @@ type Handlers struct {
 }
 
 func Router() (Handlers, error) {
-	// chain: handler->service->repo->clientDB
+	// chain: handler-> service -> repo -> clientDB
 	dbClient, err := db.NewDbClient() // todo: need to send an object of type *sql.DB ?
 	if err != nil {
 		return Handlers{}, err
 	}
 	profileRepo := db.NewProfileRepository(dbClient)
-	profileService := bl.NewService(profileRepo)
+	profileService := bl.NewService(&profileRepo)
 	profileHandler := profile.NewHandler(&profileService)
+	// healthcheckHandler := health.NewHandler()
 	return Handlers{handlers: []profile.Handler{profileHandler}}, nil
 }

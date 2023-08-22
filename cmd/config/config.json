@@ -1,0 +1,13 @@
+{
+  "DBConfig": {
+    "HOST": "localhost",
+    "PORT": 6432,
+    "USER": "srashkovits",
+    "PASSWORD": "password",
+    "DB_NAME": "dbname"
+  },
+  "ServerConfig": {
+    "HOST": "localhost",
+    "PORT": 8080
+  }
+}

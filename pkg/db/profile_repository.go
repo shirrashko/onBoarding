@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
 	"os"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
@@ -19,14 +20,9 @@ func NewProfileRepository(client *sql.DB) ProfileRepository {
 	return ProfileRepository{client: client}
 }
 
-func NewDbClient() (*sql.DB, error) {
-	host := "localhost"
-	port := "6432"
-	user := "srashkovits"
-	password := "password"
-	dbname := "dbname"
-
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+func NewDBClient(connectionInfo config.DBConfig) (*sql.DB, error) {
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", connectionInfo.Host,
+		connectionInfo.Port, connectionInfo.User, connectionInfo.Password, connectionInfo.DBName)
 	db, err := sql.Open("pgx", psqlInfo)
 	if err != nil {
 		fmt.Printf("Error opening database connection: %v\n", err)

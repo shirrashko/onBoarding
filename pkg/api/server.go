@@ -1,17 +1,20 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
 )
 
 type Server struct {
 	engine *gin.Engine
+	conf   config.Config
 }
 
-func NewServer(routerFactory func() (Handlers, error)) (Server, error) {
+func NewServer(conf config.Config, routerFactory func(config.Config) (Handlers, error)) (Server, error) {
 	engine := gin.Default()
-	server := Server{engine: engine}
-	handlers, err := routerFactory()
+	server := Server{engine: engine, conf: conf}
+	handlers, err := routerFactory(conf)
 	if err != nil {
 		return server, err
 	}
@@ -26,6 +29,7 @@ func (server *Server) SetUp(handlers Handlers) {
 	}
 }
 
-func (server *Server) ListenAndServe() error { // Attach the engine to a http.Server and start the Server.
-	return server.engine.Run("localhost:8080")
+func (server *Server) ListenAndServe() error {
+	address := fmt.Sprintf("%s:%d", server.conf.ServerInfo.Host, server.conf.ServerInfo.Port)
+	return server.engine.Run(address) // tell the engine to listen and serve localhost:8080
 }

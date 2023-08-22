@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl"
 	"net/http"
@@ -12,4 +13,5 @@ func HealthCheck(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "error"}) // status code 500 - internal server error
 	}
+	fmt.Println("hi")
 }

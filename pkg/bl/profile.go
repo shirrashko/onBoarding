@@ -25,11 +25,10 @@ func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) er
 	return s.repository.UpdateProfile(userID, newProfile)
 }
 
-func (s *Service) CreateNewProfile(newProfile model.UserProfile) error {
+func (s *Service) CreateNewProfile(newProfile model.UserProfile) (int, error) {
 	// Add the new profile to the slice.
-	err := s.repository.CreateNewProfile(newProfile)
-	// promoteNextAvailableID() //todo: check if needed i think it's now redundant and will cause problems
-	return err
+	newID, err := s.repository.CreateNewProfile(newProfile)
+	return newID, err
 }
 
 func (s *Service) GetProfileByID(id int) (model.UserProfile, error) {

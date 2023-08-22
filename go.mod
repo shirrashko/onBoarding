@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jackc/pgx/v5 v5.4.3
+	github.com/kisielk/sqlstruct v0.0.0-20210630145711-dae28ed37023
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.16.0
 )

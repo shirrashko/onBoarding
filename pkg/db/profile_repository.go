@@ -70,24 +70,24 @@ func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserPr
 	return nil
 }
 
-func (repo *ProfileRepository) CreateNewProfile(newProfile model.UserProfile) error {
-	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url) VALUES ($1, $2, $3, $4)"
-	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL)
+func (repo *ProfileRepository) CreateNewProfile(newProfile model.UserProfile) (int, error) {
+	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url) VALUES ($1, $2, $3, $4) RETURNING id"
+	var id int
+	err := repo.client.QueryRow(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL).Scan(&id)
 	if err != nil {
 		fmt.Printf("Error creating profile: %v\n", err)
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 func (repo *ProfileRepository) GetProfileByID(id int) (model.UserProfile, error) {
-	query := "SELECT username, full_name, bio, profile_pic_url FROM userProfiles WHERE id = $1"
+	query := "SELECT id, username, full_name, bio, profile_pic_url FROM userProfiles WHERE id = $1"
 	var userProfile model.UserProfile
-	err := repo.client.QueryRow(query, id).Scan(&userProfile.Username, &userProfile.FullName, &userProfile.Bio, &userProfile.ProfilePicURL)
+	err := repo.client.QueryRow(query, id).Scan(&userProfile.ID, &userProfile.Username, &userProfile.FullName, &userProfile.Bio, &userProfile.ProfilePicURL)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			// Handle the case where no rows were found.
+		if err == sql.ErrNoRows { // Handle the case where no rows were found.
 			return userProfile, fmt.Errorf("no user found with ID %d", id)
 		}
 		fmt.Printf("Error querying user profile: %v\n", err)

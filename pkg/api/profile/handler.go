@@ -43,28 +43,39 @@ func (h *Handler) getUserProfileByID(c *gin.Context) {
 
 // update an existing resource with new data.
 func (h *Handler) updateUserProfileByID(c *gin.Context) {
-	var newUser model.UserProfile
+	var updatedProfile model.UserProfile
 	// check if the given user to add is valid (or in a valid format)
-	if err := c.ShouldBindJSON(&newUser); err != nil {
+	if err := c.ShouldBindJSON(&updatedProfile); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	userID, _ := strconv.Atoi(c.Param("id"))
-	err := h.service.UpdateUserProfile(userID, newUser)
+	err := h.service.UpdateUserProfile(userID, updatedProfile)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or error updating profile"})
 		return
 	}
 
-	c.JSON(http.StatusOK, newUser)
+	updatedProfile.ID = userID
+
+	c.JSON(http.StatusOK, updatedProfile)
 }
 
 func (h *Handler) createUserProfile(c *gin.Context) {
 	var newProfile model.UserProfile
-	if err := c.BindJSON(&newProfile); err != nil { // bind the received JSON to newProfile.
+	if err := c.BindJSON(&newProfile); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	_ = h.service.CreateNewProfile(newProfile) //todo: handle error
+
+	newID, err := h.service.CreateNewProfile(newProfile)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	newProfile.ID = newID
+
 	c.IndentedJSON(http.StatusCreated, newProfile)
 }

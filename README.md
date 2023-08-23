@@ -1,25 +1,19 @@
-# User Profile Service - Stage 2: Get some REST
+<<<<<<< HEAD
+# User Profile Service - onboarding practice
 
 This project focuses on building a service with a RESTful API for managing user profiles. It is part of a larger exercise and involves designing data models, creating a REST API, and implementing endpoints.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Actions](#actions)
 - [Knowledge](#knowledge)
 - [Steps](#steps)
-- [Design](#design)
-- [API Documentation](#api-documentation)
 - [Implementation](#implementation)
 - [Testing](#testing)
 
 ## Prerequisites
 
 Before starting this project, you should have completed Stage 1 and have a basic understanding of backend concepts, the HTTP protocol, and REST API principles.
-
-## Actions
-
-- Complete Stage 1 before proceeding with this stage.
 
 ## Knowledge
 
@@ -39,8 +33,6 @@ This project assumes familiarity with:
 6. Write tests to ensure the functionality of your code.
 7. Collaborate with your mentor to determine the scope and nature of tests to be written.
 
-## Design
-
 ### Data Models
 
 - Each user has a unique ID for read and update operations.
@@ -54,24 +46,20 @@ This project assumes familiarity with:
 
 **Create User Profile:**
 - HTTP Method: POST
-- Path: `/profiles`
+- Path: `/profile/users`
 - Request Body: User profile data
 - Response: Created user profile with unique ID
 
 **Get User Profile:**
 - HTTP Method: GET
-- Path: `/profiles/{userID}`
+- Path: `/profile/users/{userID}`
 - Response: User profile data
 
 **Update User Profile:**
 - HTTP Method: PUT or PATCH
-- Path: `/profiles/{userID}`
+- Path: `/profile/users/{userID}`
 - Request Body: Updated user profile data
 - Response: Updated user profile data
-
-## API Documentation
-
-- Provide detailed documentation for each API endpoint, including expected request and response formats, parameters, and headers.
 
 ## Implementation
 
@@ -81,9 +69,8 @@ This project assumes familiarity with:
 
 ## Testing
 
-- Write tests to validate the functionality of the implemented endpoints.
-- Collaborate with your mentor to decide on the scope and type of tests to be written.
+- Tests to validate the functionality of the implemented endpoints.
 
 ## Conclusion
+This project focuses on building a service with a RESTful API for managing user profiles. It is part of a larger exercise and involves designing data models, creating a REST API, and implementing endpoints.
 
-This project aims to create a user profile service with a RESTful API, emphasizing proper design, documentation, implementation, and testing practices. By following these steps, you will build a functional and maintainable solution.

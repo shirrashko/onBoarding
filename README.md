@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # User Profile Service - onboarding practice
 
 This project focuses on building a service with a RESTful API for managing user profiles. It is part of a larger exercise and involves designing data models, creating a REST API, and implementing endpoints.

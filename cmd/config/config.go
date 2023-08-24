@@ -7,11 +7,11 @@ import (
 // DBConfig holds the info needed for connecting to the database
 // It's annotated with mapstructure tags to indicate how configuration keys should be mapped to struct fields.
 type DBConfig struct {
-	Host     string `mapstructure:"HOST"`
-	Port     int    `mapstructure:"PORT"`
-	User     string `mapstructure:"USER"`
-	Password string `mapstructure:"PASSWORD"`
-	DBName   string `mapstructure:"DB_NAME"`
+	Host         string `mapstructure:"HOST"`
+	Port         int    `mapstructure:"PORT"`
+	User         string `mapstructure:"USER"`
+	Password     string `mapstructure:"PASSWORD"`
+	DatabaseName string `mapstructure:"DATABASE_NAME"`
 }
 
 // ServerConfig Holds information about the server (host and port).

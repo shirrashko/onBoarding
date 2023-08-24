@@ -9,7 +9,7 @@ import (
 
 func NewDBClient(connectionInfo config.DBConfig) (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", connectionInfo.Host,
-		connectionInfo.Port, connectionInfo.User, connectionInfo.Password, connectionInfo.DBName)
+		connectionInfo.Port, connectionInfo.User, connectionInfo.Password, connectionInfo.DatabaseName)
 	db, err := sql.Open("pgx", psqlInfo)
 	if err != nil {
 		fmt.Printf("Error opening database connection: %v\n", err)

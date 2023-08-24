@@ -16,7 +16,7 @@ func NewHandler(s *profile.Service) Handler {
 	return Handler{s}
 }
 
-func (h Handler) getUserProfileByID(c *gin.Context) {
+func (h Handler) getProfileByID(c *gin.Context) {
 	// Retrieve the id path parameter from the URL
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -42,7 +42,7 @@ func (h Handler) getUserProfileByID(c *gin.Context) {
 }
 
 // update an existing resource with new data.
-func (h Handler) updateUserProfileByID(c *gin.Context) {
+func (h Handler) updateProfileByID(c *gin.Context) {
 	var updatedProfile model.UserProfile
 	// check if the given user to add is valid (or in a valid format)
 	if err := c.ShouldBindJSON(&updatedProfile); err != nil {
@@ -62,7 +62,7 @@ func (h Handler) updateUserProfileByID(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedProfile)
 }
 
-func (h Handler) createUserProfile(c *gin.Context) {
+func (h Handler) createProfile(c *gin.Context) {
 	var newProfile model.UserProfile
 	if err := c.BindJSON(&newProfile); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)

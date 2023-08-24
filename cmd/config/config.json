@@ -4,7 +4,7 @@
     "PORT": 6432,
     "USER": "srashkovits",
     "PASSWORD": "password",
-    "DB_NAME": "postgres"
+    "DATABASE_NAME": "postgres"
   },
   "ServerConfig": {
     "HOST": "localhost",

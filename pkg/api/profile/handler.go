@@ -30,15 +30,15 @@ func (h Handler) getUserProfileByID(c *gin.Context) {
 		return
 	}
 
-	// Get the user's profile by ID
-	profile, err := h.service.GetProfileByID(id)
+	// Get the user's userProfile by ID
+	userProfile, err := h.service.GetProfileByID(id)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving profile"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
 		return
 	}
 
-	// Respond with the profile
-	c.IndentedJSON(http.StatusOK, profile) // put the requested profile in the response body
+	// Respond with the userProfile
+	c.IndentedJSON(http.StatusOK, userProfile) // put the requested userProfile in the response body
 }
 
 // update an existing resource with new data.

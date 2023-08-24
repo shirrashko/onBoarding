@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/db/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
 )
 
 // ProfileRepository This ProfileRepository struct will encapsulate the operations related to the user profiles using the PostgreSQL database connection.

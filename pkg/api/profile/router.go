@@ -10,5 +10,5 @@ func (h Handler) SetUpRoutes(router *gin.Engine) {
 	profilesRouter.GET("/:id", h.getUserProfileByID)    // get user profile by id
 	profilesRouter.POST("", h.createUserProfile)        // create user profile, user data is in the body?
 	profilesRouter.PUT("/:id", h.updateUserProfileByID) // update user profile by id
-	// todo: need to add delete and patch?
+	// check if also need to support delete and patch?
 }

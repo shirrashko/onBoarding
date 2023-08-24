@@ -1,8 +1,8 @@
 package profile
 
 import (
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/db/profile"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/db/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/repository/profile"
 )
 
 // Service The service has a repository with a client field, which is the connection to the database we are working with

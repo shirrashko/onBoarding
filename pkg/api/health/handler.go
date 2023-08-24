@@ -16,8 +16,8 @@ func NewHandler(s *health.Service) Handler {
 
 func (h Handler) HealthCheck(c *gin.Context) {
 	if h.service.HealthCheck() {
-		c.JSON(http.StatusOK, gin.H{"status": "ok"}) // in JSON because requests and responses are being made using it
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	} else {
-		c.JSON(http.StatusInternalServerError, gin.H{"status": "error"}) // status code 500 - internal server error
+		c.JSON(http.StatusInternalServerError, gin.H{"status": "error"})
 	}
 }

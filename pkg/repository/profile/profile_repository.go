@@ -3,12 +3,8 @@ package profile
 import (
 	"database/sql"
 	"fmt"
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
-	"os"
-
 	_ "github.com/jackc/pgx/v5/stdlib"
-
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/db/model"
 )
 
 // ProfileRepository This ProfileRepository struct will encapsulate the operations related to the user profiles using the PostgreSQL database connection.
@@ -20,33 +16,7 @@ func NewProfileRepository(client *sql.DB) ProfileRepository {
 	return ProfileRepository{client: client}
 }
 
-func NewDBClient(connectionInfo config.DBConfig) (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", connectionInfo.Host,
-		connectionInfo.Port, connectionInfo.User, connectionInfo.Password, connectionInfo.DBName)
-	db, err := sql.Open("pgx", psqlInfo)
-	if err != nil {
-		fmt.Printf("Error opening database connection: %v\n", err)
-		return nil, err
-	}
-
-	// Execute the table creation script
-	script, err := os.ReadFile("/Users/srashkovits/repos/onboarding/scheme/create_table.sql")
-	if err != nil {
-		fmt.Printf("Error reading create_tables.sql: %v\n", err)
-		return nil, err
-	}
-
-	_, err = db.Exec(string(script)) // execute the script create a table named userProfiles with columns names
-	// according to the api.model
-	if err != nil {
-		fmt.Printf("Error executing create_tables.sql: %v\n", err)
-		return nil, err
-	}
-
-	return db, nil
-}
-
-// implementation of the methods of the ProfileRepository object, which regard to the db contains users profile info
+// implementation of the methods of the ProfileRepository object, which regard to the repository contains users profile info
 
 func (repo *ProfileRepository) IsUserInDB(id int) bool {
 	query := "SELECT id FROM userProfiles WHERE id = $1" //todo: understand how to put id instead of 1

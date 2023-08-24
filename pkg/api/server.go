@@ -23,8 +23,8 @@ func NewServer(conf config.Config, routerFactory func(config.Config) (Handlers, 
 }
 
 func (server *Server) SetUp(handlers Handlers) {
-	for _, h := range handlers.handlers { // looping over a list of handlers with idx and handler=value. if we had
-		// many handlers, each handler was implementing its own setup routes function according to its API
+	for _, h := range handlers.handlers { // looping over a list of handlers with idx and handler=value. Each handler
+		// implements its own setup routes function according to its API
 		h.SetUpRoutes(server.engine)
 	}
 }

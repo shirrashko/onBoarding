@@ -2,8 +2,8 @@ package profile
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/db/model"
 	"net/http"
 	"strconv"
 )

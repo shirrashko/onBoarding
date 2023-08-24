@@ -7,3 +7,5 @@ type UserProfile struct {
 	Bio           string `json:"bio"`
 	ProfilePicURL string `json:"profile_pic_url"`
 }
+
+// check it's supposed to be in db package

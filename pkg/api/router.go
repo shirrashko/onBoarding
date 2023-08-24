@@ -2,12 +2,13 @@ package api
 
 import (
 	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/health"
+	healthAPI "github.com/shirrashko/BuildingAServer-step2/pkg/api/health"
 	profileAPI "github.com/shirrashko/BuildingAServer-step2/pkg/api/profile"
-	health2 "github.com/shirrashko/BuildingAServer-step2/pkg/bl/health"
+	healthBL "github.com/shirrashko/BuildingAServer-step2/pkg/bl/health"
 	profileBL "github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
-	healthDB "github.com/shirrashko/BuildingAServer-step2/pkg/db/health"
-	profileDB "github.com/shirrashko/BuildingAServer-step2/pkg/db/profile"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/db"
+	healthDB "github.com/shirrashko/BuildingAServer-step2/pkg/repository/health"
+	profileDB "github.com/shirrashko/BuildingAServer-step2/pkg/repository/profile"
 )
 
 type Handlers struct {
@@ -15,19 +16,22 @@ type Handlers struct {
 }
 
 func Router(conf config.Config) (Handlers, error) {
-	// chain: handler-> service -> repo -> clientDB
-	dbClient, err := profileDB.NewDBClient(conf.DBConfig) // todo: need to send an object of type *sql.DB ?
+	// Hierarchy chain: handler-> service -> repo -> clientDB
+
+	dbClient, err := db.NewDBClient(conf.DBConfig)
 	if err != nil {
 		return Handlers{}, err
 	}
+
+	// profile
 	profileRepo := profileDB.NewProfileRepository(dbClient)
 	profileService := profileBL.NewService(&profileRepo)
 	profileHandler := profileAPI.NewHandler(&profileService)
 
+	// health
 	healthRepo := healthDB.NewHealthRepository(dbClient)
-	healthService := health2.NewService(&healthRepo)
-	healthHandler := health.NewHandler(&healthService)
+	healthService := healthBL.NewService(&healthRepo)
+	healthHandler := healthAPI.NewHandler(&healthService)
 
-	// healthcheckHandler := health.NewHandler()
 	return Handlers{handlers: []handler{profileHandler, healthHandler}}, nil
 }

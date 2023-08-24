@@ -24,12 +24,12 @@ func Router(conf config.Config) (Handlers, error) {
 	}
 
 	// profile
-	profileRepo := profileDB.NewProfileRepository(dbClient)
+	profileRepo := profileDB.NewRepository(dbClient)
 	profileService := profileBL.NewService(&profileRepo)
 	profileHandler := profileAPI.NewHandler(&profileService)
 
 	// health
-	healthRepo := healthDB.NewHealthRepository(dbClient)
+	healthRepo := healthDB.NewRepository(dbClient)
 	healthService := healthBL.NewService(&healthRepo)
 	healthHandler := healthAPI.NewHandler(&healthService)
 

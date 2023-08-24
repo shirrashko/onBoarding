@@ -6,7 +6,7 @@ type HealthRepository struct {
 	client *sql.DB
 }
 
-func NewHealthRepository(client *sql.DB) HealthRepository {
+func NewRepository(client *sql.DB) HealthRepository {
 	return HealthRepository{client: client}
 }
 

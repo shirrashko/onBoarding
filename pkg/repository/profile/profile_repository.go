@@ -12,7 +12,7 @@ type ProfileRepository struct {
 	client *sql.DB
 }
 
-func NewProfileRepository(client *sql.DB) ProfileRepository {
+func NewRepository(client *sql.DB) ProfileRepository {
 	return ProfileRepository{client: client}
 }
 

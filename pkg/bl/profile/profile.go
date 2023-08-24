@@ -34,12 +34,3 @@ func (s *Service) CreateNewProfile(newProfile model.UserProfile) (int, error) {
 func (s *Service) GetProfileByID(id int) (model.UserProfile, error) {
 	return s.repository.GetProfileByID(id)
 }
-
-func (s *Service) HealthChecking() bool {
-	// In the real world the health-check function will also check connections to other resources that the server
-	//depends on.
-	return true
-}
-
-//todo: i dont think that the different servers (of the health check and the profile) should be allowed to access all
-// these functions

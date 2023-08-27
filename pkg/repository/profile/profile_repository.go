@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/jackc/pgx/v5/stdlib"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
 )
 
 // ProfileRepository This ProfileRepository struct will encapsulate the operations related to the user profiles using the PostgreSQL database connection.
@@ -17,18 +17,6 @@ func NewRepository(client *sql.DB) ProfileRepository {
 }
 
 // implementation of the methods of the ProfileRepository object, which regard to the repository contains users profile info
-
-func (repo *ProfileRepository) IsUserInDB(id int) bool {
-	query := "SELECT id FROM userProfiles WHERE id = $1" //todo: understand how to put id instead of 1
-	var userID int
-	err := repo.client.QueryRow(query, id).Scan(&userID)
-	if err == nil {
-		return true // User with the given id was found
-	} else if err != sql.ErrNoRows {
-		fmt.Printf("Error checking user existence: %v\n", err)
-	}
-	return false // User with the given id was not found
-}
 
 func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserProfile) error {
 	query := "UPDATE userProfiles SET username = $1, full_name = $2, bio = $3, profile_pic_url = $4 WHERE id = $5"

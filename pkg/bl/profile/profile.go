@@ -1,7 +1,7 @@
 package profile
 
 import (
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/repository/profile"
 )
 
@@ -14,21 +14,12 @@ func NewService(profileRepo *profile.ProfileRepository) Service {
 	return Service{repository: profileRepo}
 }
 
-func (s *Service) IsUserInDB(id int) bool {
-	if s.repository.IsUserInDB(id) {
-		return true
-	}
-	return false
-}
-
 func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) error {
 	return s.repository.UpdateProfile(userID, newProfile)
 }
 
 func (s *Service) CreateNewProfile(newProfile model.UserProfile) (int, error) {
-	// Add the new profile to the slice.
-	newID, err := s.repository.CreateNewProfile(newProfile)
-	return newID, err
+	return s.repository.CreateNewProfile(newProfile) // return newID and error
 }
 
 func (s *Service) GetProfileByID(id int) (model.UserProfile, error) {

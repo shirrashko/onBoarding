@@ -1,8 +1,10 @@
 package profile
 
 import (
+	"database/sql"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/api/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
 	"net/http"
 	"strconv"
@@ -20,32 +22,32 @@ func (h Handler) getProfileByID(c *gin.Context) {
 	// Retrieve the id path parameter from the URL
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
-		return
-	}
-
-	// Check if the user exists in the database
-	if !h.service.IsUserInDB(id) {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
 		return
 	}
 
 	// Get the user's userProfile by ID
 	userProfile, err := h.service.GetProfileByID(id)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
+		if errors.Is(err, sql.ErrNoRows) { // sql.ErrNoRows is an error returned when a database query returns no rows.
+			// it indicates that a query was executed successfully, but the result set was empty. This error can occur
+			// when you're trying to retrieve data from the DB using a query and the data you're looking for
+			// doesn't exist in the DB.
+			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
 		return
 	}
 
 	// Respond with the userProfile
-	c.IndentedJSON(http.StatusOK, userProfile) // put the requested userProfile in the response body
+	c.JSON(http.StatusOK, userProfile) // put the requested userProfile in the response body
 }
 
 // update an existing resource with new data.
 func (h Handler) updateProfileByID(c *gin.Context) {
 	var updatedProfile model.UserProfile
-	// check if the given user to add is valid (or in a valid format)
-	if err := c.ShouldBindJSON(&updatedProfile); err != nil {
+	if err := c.ShouldBindJSON(&updatedProfile); err != nil { // check if the given user to add is valid (or in a valid format)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -77,5 +79,5 @@ func (h Handler) createProfile(c *gin.Context) {
 
 	newProfile.ID = newID
 
-	c.IndentedJSON(http.StatusCreated, newProfile)
+	c.JSON(http.StatusCreated, newProfile)
 }

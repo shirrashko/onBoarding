@@ -23,15 +23,16 @@ type ServerConfig struct {
 // Config The main configuration struct that contains nested fields for database connection information and server information.
 // It's also annotated with mapstructure tags.
 type Config struct {
-	DBConfig   DBConfig     `mapstructure:"DBConfig"`
-	ServerInfo ServerConfig `mapstructure:"ServerConfig"`
+	DBConfig   DBConfig     `mapstructure:"DB"`
+	ServerInfo ServerConfig `mapstructure:"SERVER"`
 }
 
 var vp *viper.Viper
 
 // LoadConfig loading the configuration from various sources and returning a populated Config struct:
 func LoadConfig() (Config, error) {
-	vp = viper.New()  // Initializes a new instance of the viper configuration manager.
+	vp = viper.New()
+	//vp = viper.New()  // Initializes a new instance of the viper configuration manager.
 	var config Config // Creates an instance of the Config struct to store the loaded configuration.
 
 	vp.SetConfigName("config")     // Specifies the name of the configuration file without the file extension ("config.json").

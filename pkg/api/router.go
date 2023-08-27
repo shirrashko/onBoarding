@@ -12,7 +12,7 @@ import (
 )
 
 type Handlers struct {
-	handlers []handler
+	handlers []IRoutesHandler
 }
 
 func Router(conf config.Config) (Handlers, error) {
@@ -33,5 +33,5 @@ func Router(conf config.Config) (Handlers, error) {
 	healthService := healthBL.NewService(&healthRepo)
 	healthHandler := healthAPI.NewHandler(&healthService)
 
-	return Handlers{handlers: []handler{profileHandler, healthHandler}}, nil
+	return Handlers{handlers: []IRoutesHandler{profileHandler, healthHandler}}, nil
 }

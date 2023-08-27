@@ -9,7 +9,7 @@ import (
 func main() {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		panic(errors.Wrap(err, "Unable to load configuration file"))
+		panic(errors.Wrap(err, "error loading config"))
 	}
 
 	server, err := api.NewServer(conf, api.Router)

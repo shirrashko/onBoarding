@@ -7,7 +7,6 @@ import (
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
 	"net/http"
-	"strconv"
 )
 
 type Handler struct {
@@ -19,15 +18,14 @@ func NewHandler(s *profile.Service) Handler {
 }
 
 func (h Handler) getProfileByID(c *gin.Context) {
-	// Retrieve the id path parameter from the URL
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
+	var request model.GetProfileRequest
+	if err := c.ShouldBindUri(&request); err != nil { //
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
 		return
 	}
 
-	// Get the user's userProfile by ID
-	userProfile, err := h.service.GetProfileByID(id)
+	// Get the user's userProfile
+	userProfile, err := h.service.GetProfileByID(request.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) { // sql.ErrNoRows is an error returned when a database query returns no rows.
 			// it indicates that a query was executed successfully, but the result set was empty. This error can occur
@@ -35,49 +33,50 @@ func (h Handler) getProfileByID(c *gin.Context) {
 			// doesn't exist in the DB.
 			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
 			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
+			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
-		return
 	}
 
 	// Respond with the userProfile
-	c.JSON(http.StatusOK, userProfile) // put the requested userProfile in the response body
+	c.JSON(http.StatusOK, userProfile)
 }
 
-// update an existing resource with new data.
 func (h Handler) updateProfileByID(c *gin.Context) {
-	var updatedProfile model.UserProfile
-	if err := c.ShouldBindJSON(&updatedProfile); err != nil { // check if the given user to add is valid (or in a valid format)
+	var updatedProfile model.UpdateProfileRequest
+
+	if err := c.ShouldBindUri(&(updatedProfile.Profile)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	userID, _ := strconv.Atoi(c.Param("id"))
-	err := h.service.UpdateUserProfile(userID, updatedProfile)
+	if err := c.ShouldBindJSON(&updatedProfile.Profile.BaseUserProfile); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := h.service.UpdateUserProfile(updatedProfile.Profile)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or error updating profile"})
 		return
 	}
 
-	updatedProfile.ID = userID
-
-	c.JSON(http.StatusOK, updatedProfile)
+	c.JSON(http.StatusOK, updatedProfile.Profile)
 }
 
 func (h Handler) createProfile(c *gin.Context) {
-	var newProfile model.UserProfile
-	if err := c.BindJSON(&newProfile); err != nil {
+	var newProfile model.CreateProfileRequest
+	if err := c.ShouldBindJSON(&newProfile.Profile); err != nil { // bind JSON data from the request body into a Go struct
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	newID, err := h.service.CreateNewProfile(newProfile)
+	newID, err := h.service.CreateNewProfile(newProfile.Profile)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	newProfile.ID = newID
-
-	c.JSON(http.StatusCreated, newProfile)
+	c.JSON(http.StatusCreated, newID) // output to the request body the id that the new profile got in the system
 }

@@ -14,11 +14,11 @@ func NewService(profileRepo *profile.ProfileRepository) Service {
 	return Service{repository: profileRepo}
 }
 
-func (s *Service) UpdateUserProfile(userID int, newProfile model.UserProfile) error {
-	return s.repository.UpdateProfile(userID, newProfile)
+func (s *Service) UpdateUserProfile(newProfile model.UserProfile) error {
+	return s.repository.UpdateProfile(newProfile)
 }
 
-func (s *Service) CreateNewProfile(newProfile model.UserProfile) (int, error) {
+func (s *Service) CreateNewProfile(newProfile model.BaseUserProfile) (int, error) {
 	return s.repository.CreateNewProfile(newProfile) // return newID and error
 }
 

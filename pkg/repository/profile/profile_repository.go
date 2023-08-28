@@ -18,9 +18,9 @@ func NewRepository(client *sql.DB) ProfileRepository {
 
 // implementation of the methods of the ProfileRepository object, which regard to the repository contains users profile info
 
-func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserProfile) error {
+func (repo *ProfileRepository) UpdateProfile(newProfile model.UserProfile) error {
 	query := "UPDATE userProfiles SET username = $1, full_name = $2, bio = $3, profile_pic_url = $4 WHERE id = $5"
-	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, userID) // execute the prepared SQL query.
+	_, err := repo.client.Exec(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL, newProfile.ID) // execute the prepared SQL query.
 	if err != nil {
 		fmt.Printf("Error updating profile: %v\n", err)
 		return err
@@ -28,7 +28,7 @@ func (repo *ProfileRepository) UpdateProfile(userID int, newProfile model.UserPr
 	return nil
 }
 
-func (repo *ProfileRepository) CreateNewProfile(newProfile model.UserProfile) (int, error) {
+func (repo *ProfileRepository) CreateNewProfile(newProfile model.BaseUserProfile) (int, error) {
 	query := "INSERT INTO userProfiles (username, full_name, bio, profile_pic_url) VALUES ($1, $2, $3, $4) RETURNING id"
 	var id int
 	err := repo.client.QueryRow(query, newProfile.Username, newProfile.FullName, newProfile.Bio, newProfile.ProfilePicURL).Scan(&id)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
+	errors "github.com/shirrashko/BuildingAServer-step2/pkg/error"
 )
 
 // ProfileRepository This ProfileRepository struct will encapsulate the operations related to the user profiles using the PostgreSQL database connection.
@@ -46,7 +47,7 @@ func (repo *ProfileRepository) GetProfileByID(id int) (model.UserProfile, error)
 
 	if err != nil {
 		if err == sql.ErrNoRows { // Handle the case where no rows were found.
-			return userProfile, fmt.Errorf("no user found with ID %d", id)
+			return userProfile, errors.NewNotFoundError(err)
 		}
 		fmt.Printf("Error querying user profile: %v\n", err)
 		return userProfile, err

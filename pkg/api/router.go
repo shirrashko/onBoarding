@@ -15,6 +15,10 @@ type Handlers struct {
 	handlers []IRoutesHandler
 }
 
+// check that sub services handlers are implementing IRoutesHandler interface
+var _ IRoutesHandler = (*profileAPI.Handler)(nil)
+var _ IRoutesHandler = (*healthAPI.Handler)(nil)
+
 func Router(conf config.Config) (Handlers, error) {
 	// Hierarchy chain: handler-> service -> repo -> clientDB
 

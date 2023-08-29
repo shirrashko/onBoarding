@@ -1,11 +1,11 @@
 package profile
 
 import (
-	"database/sql"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
+	e "github.com/shirrashko/BuildingAServer-step2/pkg/error"
 	"net/http"
 )
 
@@ -27,10 +27,7 @@ func (h Handler) getProfileByID(c *gin.Context) {
 	// Get the user's userProfile
 	userProfile, err := h.service.GetProfileByID(request.ID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) { // sql.ErrNoRows is an error returned when a database query returns no rows.
-			// it indicates that a query was executed successfully, but the result set was empty. This error can occur
-			// when you're trying to retrieve data from the DB using a query and the data you're looking for
-			// doesn't exist in the DB.
+		if errors.Is(err, e.UserNotFoundError{}) {
 			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
 			return
 		} else {
@@ -51,7 +48,7 @@ func (h Handler) updateProfileByID(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&updatedProfile.Profile.BaseUserProfile); err != nil {
+	if err := c.Bind(&updatedProfile.Profile.BaseUserProfile); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -67,7 +64,7 @@ func (h Handler) updateProfileByID(c *gin.Context) {
 
 func (h Handler) createProfile(c *gin.Context) {
 	var newProfile model.CreateProfileRequest
-	if err := c.ShouldBindJSON(&newProfile.Profile); err != nil { // bind JSON data from the request body into a Go struct
+	if err := c.Bind(&newProfile.Profile); err != nil { // bind JSON data from the request body into a Go struct
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}

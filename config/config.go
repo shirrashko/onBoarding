@@ -27,11 +27,9 @@ type Config struct {
 	ServerInfo ServerConfig `mapstructure:"SERVER"`
 }
 
-var vp *viper.Viper
-
 // LoadConfig loading the configuration from various sources and returning a populated Config struct:
 func LoadConfig() (Config, error) {
-	vp = viper.New()
+	vp := viper.New()
 	//vp = viper.New()  // Initializes a new instance of the viper configuration manager.
 	var config Config // Creates an instance of the Config struct to store the loaded configuration.
 

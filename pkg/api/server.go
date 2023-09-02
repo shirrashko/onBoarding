@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
+	"github.com/shirrashko/BuildingAServer-step2/config"
 )
 
 type Server struct {

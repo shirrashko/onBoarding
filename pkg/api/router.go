@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
+	"github.com/shirrashko/BuildingAServer-step2/config"
 	healthAPI "github.com/shirrashko/BuildingAServer-step2/pkg/api/health"
 	profileAPI "github.com/shirrashko/BuildingAServer-step2/pkg/api/profile"
 	healthBL "github.com/shirrashko/BuildingAServer-step2/pkg/bl/health"

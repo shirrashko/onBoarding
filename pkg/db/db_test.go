@@ -3,7 +3,7 @@ package db
 
 import (
 	_ "database/sql"
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
+	"github.com/shirrashko/BuildingAServer-step2/config"
 	"testing"
 )
 

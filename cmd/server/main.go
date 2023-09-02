@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/pkg/errors"
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
+	"github.com/shirrashko/BuildingAServer-step2/config"
 	"github.com/shirrashko/BuildingAServer-step2/pkg/api"
 )
 

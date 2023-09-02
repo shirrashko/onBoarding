@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/shirrashko/BuildingAServer-step2/cmd/config"
+	"github.com/shirrashko/BuildingAServer-step2/config"
 	"os"
 )
 

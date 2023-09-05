@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	conf, err := config.LoadConfig()
+	var conf config.Config
+	err := config.LoadConfig(&conf)
 	if err != nil {
 		panic(errors.Wrap(err, "error loading config"))
 	}

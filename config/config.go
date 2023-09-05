@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper" // a popular configuration management library for Go.
 )
 
@@ -27,24 +28,24 @@ type Config struct {
 	ServerInfo ServerConfig `mapstructure:"SERVER"`
 }
 
-// LoadConfig loading the configuration from various sources and returning a populated Config struct:
-func LoadConfig() (Config, error) {
-	vp := viper.New()
-	//vp = viper.New()  // Initializes a new instance of the viper configuration manager.
-	var config Config // Creates an instance of the Config struct to store the loaded configuration.
+// LoadConfig load the configuration from various sources and populate the given Config struct
+func LoadConfig(config interface{}) error {
 
-	vp.SetConfigName("config")     // Specifies the name of the configuration file without the file extension ("config.json").
-	vp.SetConfigType("json")       // Sets the expected file type for the configuration file.
-	vp.AddConfigPath("cmd/config") // Adds the directory path where the configuration file is located.
-	vp.AutomaticEnv()              // Enables automatic binding of environment variables to configuration keys.
+	v := viper.New() // Initializes a new instance of the viper configuration manager.
 
-	if err := vp.ReadInConfig(); err != nil { //  If successful, it loads the configuration into vp.
-		return Config{}, err
+	// Configuration settings
+	v.SetConfigName("config")
+	v.SetConfigType("json")
+	v.AddConfigPath("./config")
+	v.AutomaticEnv()
+
+	// Read and unmarshal the configuration into config struct argument
+	if err := v.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read configuration: %w", err)
+	}
+	if err := v.Unmarshal(&config); err != nil {
+		return fmt.Errorf("failed to unmarshal ServerInfo: %w", err)
 	}
 
-	if err := vp.Unmarshal(&config); err != nil { // Unmarshal the configuration data from vp into the config struct.
-		return Config{}, err
-	}
-
-	return config, nil
+	return nil
 }

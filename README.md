@@ -4,15 +4,10 @@ This project focuses on building a service with a RESTful API for managing user 
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
 - [Knowledge](#knowledge)
 - [Steps](#steps)
 - [Implementation](#implementation)
 - [Testing](#testing)
-
-## Prerequisites
-
-Before starting this project, you should have completed Stage 1 and have a basic understanding of backend concepts, the HTTP protocol, and REST API principles.
 
 ## Knowledge
 

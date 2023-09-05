@@ -17,7 +17,7 @@ func NewDBClient(connectionInfo config.DBConfig) (*sql.DB, error) {
 	}
 
 	// Execute the table creation script
-	script, err := os.ReadFile("/Users/srashkovits/repos/onboarding/scheme/create_table.sql")
+	script, err := os.ReadFile("/Users/srashkovits/repos/onboarding/schema/create_table.sql")
 	if err != nil {
 		fmt.Printf("Error reading create_tables.sql: %v\n", err)
 		return nil, err

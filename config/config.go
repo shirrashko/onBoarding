@@ -15,7 +15,7 @@ type DBConfig struct {
 	DatabaseName string `mapstructure:"DATABASE_NAME"`
 }
 
-// ServerConfig Holds information about the server (host and port).
+// ServerConfig Holds information about the server (host and port). using this in the listen and serve part
 type ServerConfig struct {
 	Host string `mapstructure:"HOST"`
 	Port int    `mapstructure:"PORT"`

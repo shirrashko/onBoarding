@@ -9,8 +9,8 @@ type UserNotFoundError struct {
 }
 
 // NewNotFoundError is a factory function used to create instances of the UserNotFoundFound error type.
-// The function wraps the NotFoundError instance with a stack trace using errors.WithStack. This helps capture the
-// stack trace when the error is created, which is useful for debugging.
+// The function wraps the NotFoundError instance with a stack trace. This helps capture the stack trace when the
+// error is created, which is useful for debugging.
 func NewNotFoundError(error error) error {
 	return errors.WithStack(UserNotFoundError{err: error})
 }

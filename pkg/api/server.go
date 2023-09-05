@@ -12,7 +12,7 @@ type Server struct {
 }
 
 func NewServer(conf config.Config, routerFactory func(config.Config) (Handlers, error)) (Server, error) {
-	engine := gin.Default()
+	engine := gin.Default() // The default gin use Logger & Recovery middlewares
 	server := Server{engine: engine, conf: conf}
 	handlers, err := routerFactory(conf)
 	if err != nil {

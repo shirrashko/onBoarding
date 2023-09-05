@@ -15,7 +15,8 @@ type Handlers struct {
 	handlers []IRoutesHandler
 }
 
-// check that sub services handlers are implementing IRoutesHandler interface
+// check that sub services handlers are implementing IRoutesHandler interface.
+// not really needed since in the return of the Router function we initiate instances of these types, but good practice.
 var _ IRoutesHandler = (*profileAPI.Handler)(nil)
 var _ IRoutesHandler = (*healthAPI.Handler)(nil)
 
@@ -26,13 +27,16 @@ func Router(conf config.Config) (Handlers, error) {
 	if err != nil {
 		return Handlers{}, err
 	}
+	if err != nil {
+		return Handlers{}, err
+	}
 
-	// profile
+	// profile service
 	profileRepo := profileDB.NewRepository(dbClient)
 	profileService := profileBL.NewService(&profileRepo)
 	profileHandler := profileAPI.NewHandler(&profileService)
 
-	// health
+	// health service
 	healthRepo := healthDB.NewRepository(dbClient)
 	healthService := healthBL.NewService(&healthRepo)
 	healthHandler := healthAPI.NewHandler(&healthService)

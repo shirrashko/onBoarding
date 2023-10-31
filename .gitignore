@@ -1,0 +1,5 @@
+# Ignore .idea directory created by JetBrains IDEs
+.idea/
+
+# Ignore .DS_Store files created by macOS
+.DS_Store

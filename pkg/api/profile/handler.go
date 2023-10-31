@@ -1,59 +1,79 @@
 package profile
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/bl"
-	"github.com/shirrashko/BuildingAServer-step2/pkg/db"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/api/profile/model"
+	"github.com/shirrashko/BuildingAServer-step2/pkg/bl/profile"
+	e "github.com/shirrashko/BuildingAServer-step2/pkg/error"
 	"net/http"
-	"strconv"
 )
 
 type Handler struct {
-	service *bl.Service
+	service *profile.Service
 }
 
-func NewHandler(s *bl.Service) Handler {
+func NewHandler(s *profile.Service) Handler {
 	return Handler{s}
 }
 
-// implementation of the methods of the Service object, which regard to the db contains users profile info
-
-func (h *Handler) getAUserProfile(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id")) // retrieve the id path parameter from the URL
-	if h.service.IsUserInDB(id) {
-		c.IndentedJSON(http.StatusOK, h.service.GetProfileByID(id))
-	} else {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "ID not found"})
+func (h Handler) getProfileByID(c *gin.Context) {
+	var request model.GetProfileRequest
+	if err := c.ShouldBindUri(&request); err != nil { //
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid ID"})
+		return
 	}
+
+	// Get the user's userProfile
+	userProfile, err := h.service.GetProfileByID(request.ID)
+	if err != nil {
+		if errors.Is(err, e.UserNotFoundError{}) {
+			c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+			return
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving userProfile"})
+			return
+		}
+	}
+
+	// Respond with the userProfile
+	c.JSON(http.StatusOK, userProfile)
 }
 
-// update an existing resource with new data.
-func (h *Handler) updateUserProfile(c *gin.Context) {
-	var newUser db.UserProfile
-	// check if the given user to add is valid (or in a valid format)
-	if err := c.ShouldBindJSON(&newUser); err != nil {
+func (h Handler) updateProfileByID(c *gin.Context) {
+	var updatedProfile model.UpdateProfileRequest
+
+	if err := c.ShouldBindUri(&(updatedProfile.Profile)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	userID, _ := strconv.Atoi(c.Param("id"))
-	if !h.service.IsUserInDB(userID) {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
-		return
-	} else { // adds a user from JSON received in the request body
-		h.service.UpdateUserProfile(userID, newUser)
-		c.JSON(http.StatusOK, newUser)
-	}
-}
-
-func (h *Handler) createUserProfile(c *gin.Context) {
-	var newProfile db.UserProfile
-	if err := c.BindJSON(&newProfile); err != nil { // bind the received JSON to newProfile.
+	if err := c.Bind(&updatedProfile.Profile.BaseUserProfile); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	h.service.CreateNewUser(newProfile)
-	c.IndentedJSON(http.StatusCreated, newProfile)
+
+	err := h.service.UpdateUserProfile(updatedProfile.Profile)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or error updating profile"})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedProfile.Profile)
 }
 
-// parsing the JSON data and mapping it to a Go struct. If the JSON data doesn't match the Go struct or if there
-// are validation errors (e.g., wrong data types), Gin provides error messages that you can handle.
+func (h Handler) createProfile(c *gin.Context) {
+	var newProfile model.CreateProfileRequest
+	if err := c.Bind(&newProfile.Profile); err != nil { // bind JSON data from the request body into a Go struct
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	newID, err := h.service.CreateNewProfile(newProfile.Profile)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusCreated, newID) // output to the request body the id that the new profile got in the system
+}
